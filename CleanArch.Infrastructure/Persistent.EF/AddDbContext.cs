@@ -1,6 +1,7 @@
 ﻿using CleanArch.Domain.OrdersAgg;
 using CleanArch.Domain.Products;
 using CleanArch.Domain.ProductsAgg;
+using CleanArch.Domain.Shared;
 using CleanArch.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -32,7 +33,8 @@ namespace CleanArch.Infrastructure.Persistent.EF
             modelBuilder.Entity<Product>().OwnsOne(a => a.Money);
             modelBuilder.Entity<User>().OwnsOne(a => a.PhoneNumber);
 
-           base.OnModelCreating(modelBuilder);
+            
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

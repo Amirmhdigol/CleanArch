@@ -8,7 +8,6 @@ namespace CleanArch.Domain.Products.Repository
 {
     public interface IProductRepository
     {
-
         Task<Product> GetById(long id);
         void Add(Product product);
         void Update(Product product);

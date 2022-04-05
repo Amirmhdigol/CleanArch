@@ -32,9 +32,9 @@ using System.Threading.Tasks;
 
 namespace CleanArch.Config
 {
-    public class ProjectBootstrapper
+    public static class ProjectBootstrapper
     {
-        public static void Init(IServiceCollection services, string connectionstring)
+        public static void Init(this IServiceCollection services, string connectionstring)
         {
             services.AddTransient<IProductRepository,ProductRepository>();
             services.AddTransient<IUserRepository,UserRepository>();
@@ -58,6 +58,7 @@ namespace CleanArch.Config
                  return new MongoClient("connectionstring");
              });
             services.AddScoped<ISmsService, SmsService>();
+            
         }
     }
 }
