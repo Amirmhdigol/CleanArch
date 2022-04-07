@@ -42,9 +42,9 @@ void ConfigureServices(IServiceCollection services, string connectionStrings)
     services.AddValidatorsFromAssembly(typeof(CreateProductCommandValidator).Assembly);
 
     services.AddMediatR(typeof(CreateProductCommand).Assembly);
-    services.AddMediatR(typeof(EditProductCommand).Assembly);
+    //services.AddMediatR(typeof(EditProductCommand).Assembly);
     services.AddMediatR(typeof(GetProductByIdQuery).Assembly);
-    services.AddMediatR(typeof(GetProductListQuery).Assembly);
+    //services.AddMediatR(typeof(GetProductListQuery).Assembly);
 
     services.AddDbContext<AddDbContext>(option =>
     {

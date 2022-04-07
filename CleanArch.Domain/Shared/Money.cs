@@ -8,6 +8,10 @@ namespace CleanArch.Domain.Shared
 {
     public class Money : BaseValueObject
     {
+        public Money()
+        {
+
+        }
         public int Value { get; private set; }
 
         public Money(int rialValue)

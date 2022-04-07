@@ -11,7 +11,7 @@ namespace CleanArch.Infrastructure
     {
         public void SendSMS(SMSBody sMSBody)
         {
-            throw new NotImplementedException();
+            // 
         }
     }
 }
