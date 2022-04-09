@@ -1,3 +1,4 @@
+using CleanArch.Api;
 using CleanArch.Application.Products.Create;
 using CleanArch.Application.Products.Edit;
 using CleanArch.Application.Shared;
@@ -24,7 +25,7 @@ using MongoDB.Driver.Core.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddAutoMapper(typeof(MapProfile).Assembly);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
