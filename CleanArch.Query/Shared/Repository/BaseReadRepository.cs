@@ -9,7 +9,7 @@ namespace CleanArch.Query.Shared.Repository
 {
     public class BaseReadRepository<TEntity> : IBaseReadRepository<TEntity> where TEntity : BaseReadModel
     {
-        private readonly IMongoCollection<TEntity> _collection;
+        public IMongoCollection<TEntity> _collection;
         public BaseReadRepository(IMongoClient mongoClient)
         {
             var Database = mongoClient.GetDatabase("CleanArch");
@@ -21,7 +21,7 @@ namespace CleanArch.Query.Shared.Repository
         }
 
         public async Task<List<TEntity>> GetAll()
-        {
+        {   
             var res = await _collection.FindAsync(r => true);
             return res.ToList();
         }

@@ -2,10 +2,12 @@ using CleanArch.Api;
 using CleanArch.Application.Products.Create;
 using CleanArch.Application.Products.Edit;
 using CleanArch.Application.Shared;
+using CleanArch.Application.Users;
 using CleanArch.Config;
 using CleanArch.Contracts;
 using CleanArch.Domain.OrdersAgg.Repository;
 using CleanArch.Domain.Products.Repository;
+using CleanArch.Domain.UsersAgg;
 using CleanArch.Domain.UsersAgg.Repository;
 using CleanArch.Infrastructure;
 using CleanArch.Infrastructure.Persistent.EF;
@@ -13,14 +15,18 @@ using CleanArch.Infrastructure.Persistent.EF.Orders;
 using CleanArch.Infrastructure.Persistent.EF.Products;
 using CleanArch.Infrastructure.Persistent.EF.Users;
 using CleanArch.Query.Models.Products;
+using CleanArch.Query.Models.Users.Repository;
 using CleanArch.Query.Products.GetById;
 using CleanArch.Query.Products.GetList;
 using CleanArch.Query.Repositories;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Configuration;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,10 +40,13 @@ builder.Services.AddSwaggerGen();
 
 void ConfigureServices(IServiceCollection services, string connectionStrings)
 {
+    services.AddTransient<IUserDomainServices, UserDomainService>();
+
     services.AddTransient<IProductRepository, ProductRepository>();
     services.AddTransient<IUserRepository, UserRepository>();
     services.AddTransient<IOrderRepository, OrderRepository>();
     services.AddTransient<IProductReadRepository, ProductReadRepository>();
+    services.AddTransient<IUserReadRepository, UserReadRepository>();
 
     services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CommandValidationBehavior<,>));
     services.AddValidatorsFromAssembly(typeof(CreateProductCommandValidator).Assembly);
@@ -56,7 +65,26 @@ void ConfigureServices(IServiceCollection services, string connectionStrings)
         return new MongoClient("mongodb://localhost:27017");
     });
     services.AddScoped<ISmsService, SmsService>();
+    
 }
+builder.Services.AddAuthentication(option =>
+{
+    option.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(option =>
+{
+    option.TokenValidationParameters = new TokenValidationParameters()
+    {
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtConfig:SignInKey"])),
+        ValidIssuer = builder.Configuration["JwtConfig:Issuer"],
+        ValidAudience = builder.Configuration["JwtConfig:Audience"],
+        ValidateLifetime = true,
+        ValidateIssuer = true ,
+        ValidateIssuerSigningKey = true,
+        ValidateAudience = true
+    };
+});
 ConfigureServices(builder.Services, builder.Configuration.GetConnectionString("DefaultConnection"));
 var app = builder.Build();
 

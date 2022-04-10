@@ -9,6 +9,10 @@ namespace CleanArch.Domain.Users.ValueObjects
 {
     public class PhoneNumber : BaseValueObject
     {
+        public PhoneNumber()
+        {
+
+        }
         public string Phone { get; private set; }
 
         public PhoneNumber(string phone)

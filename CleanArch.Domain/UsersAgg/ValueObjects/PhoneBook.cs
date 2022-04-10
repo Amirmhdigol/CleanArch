@@ -9,6 +9,10 @@ namespace CleanArch.Domain.Users.ValueObjects
 {
     public class PhoneBook : BaseValueObject
     {
+        public PhoneBook()
+        {
+
+        }
         public PhoneBook(PhoneNumber telePhone, PhoneNumber fax)
         {
             TelePhone = telePhone;
