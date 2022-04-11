@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CleanArch.Query.Models.Users.Repository
 {
-    public interface IUserReadRepository
+    public interface IUserReadRepository : IBaseReadRepository<UserReadModel>
     {
         Task<UserReadModel> GetByEmail(string email);
     }

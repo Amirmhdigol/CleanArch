@@ -6,6 +6,7 @@ using CleanArch.Query.Models.Products;
 using CleanArch.Query.Products.GetById;
 using CleanArch.Query.Products.GetList;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
@@ -25,6 +26,7 @@ namespace CleanArch.Api.Controllers
             _mapper = mapper;
         }
         [HttpGet]
+        [Authorize]
         public async Task<List<ProductReadModel>> GetProducts()
         {
             var Products = await _mediator.Send(new GetProductListQuery());

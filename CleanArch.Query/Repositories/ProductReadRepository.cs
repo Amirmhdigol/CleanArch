@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CleanArch.Query.Repositories
 {
-    public class ProductReadRepository : BaseReadRepository<ProductReadModel>  , IProductReadRepository
+    public class ProductReadRepository : BaseReadRepository<ProductReadModel>, IProductReadRepository
     {
         public ProductReadRepository(IMongoClient client) : base(client)
         {
