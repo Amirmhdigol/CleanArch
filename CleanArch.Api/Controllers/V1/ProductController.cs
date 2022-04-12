@@ -11,10 +11,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 
-namespace CleanArch.Api.Controllers
+namespace CleanArch.Api.Controllers.V1
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0", Deprecated = true)]
     [ApiController]
+    [Route("v{version:apiVersion}/[controller]")]
     public class ProductController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -27,14 +28,14 @@ namespace CleanArch.Api.Controllers
         }
         [HttpGet]
         [Authorize]
-        public async Task<List<ProductReadModel>> GetProducts()
+        public virtual async Task<List<ProductReadModel>> GetProducts()
         {
             var Products = await _mediator.Send(new GetProductListQuery());
             var ViewModels = _mapper.Map<List<ProductReadModel>>(Products);
             return ViewModels;
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductViewModel>> GetProductById(long id)
+        public virtual async Task<ActionResult<ProductViewModel>> GetProductById(long id)
         {
             var FindedProduct = await _mediator.Send(new GetProductByIdQuery(id));
             if (FindedProduct == null)

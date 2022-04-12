@@ -22,6 +22,8 @@ using CleanArch.Query.Repositories;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
@@ -36,6 +38,18 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+builder.Services.AddApiVersioning(option =>
+{
+    option.DefaultApiVersion = new ApiVersion(2, 0);
+    option.AssumeDefaultVersionWhenUnspecified = true;
+    option.ReportApiVersions = true;
+});
+builder.Services.AddVersionedApiExplorer(option =>
+{
+    option.GroupNameFormat = "'v'VVV";
+    option.SubstituteApiVersionInUrl = true;
+});
 //ProjectBootstrapper.Init(builder.Services,builder.Configuration.GetConnectionString("DefaultConnection"));
 
 void ConfigureServices(IServiceCollection services, string connectionStrings)
@@ -65,7 +79,7 @@ void ConfigureServices(IServiceCollection services, string connectionStrings)
         return new MongoClient("mongodb://localhost:27017");
     });
     services.AddScoped<ISmsService, SmsService>();
-    
+
 }
 builder.Services.AddAuthentication(option =>
 {
@@ -80,7 +94,7 @@ builder.Services.AddAuthentication(option =>
         ValidIssuer = builder.Configuration["JwtConfig:Issuer"],
         ValidAudience = builder.Configuration["JwtConfig:Audience"],
         ValidateLifetime = true,
-        ValidateIssuer = true ,
+        ValidateIssuer = true,
         ValidateIssuerSigningKey = true,
         ValidateAudience = true
     };
@@ -92,7 +106,16 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(option =>
+    {
+        var Scope = app.Services.CreateScope();
+        var Service = Scope.ServiceProvider.GetRequiredService<IApiVersionDescriptionProvider>();
+
+        foreach (var item in Service.ApiVersionDescriptions)
+        {
+            option.SwaggerEndpoint($"/swagger/{item.GroupName}/swagger.json", item.GroupName.ToString());
+        }
+    });
 }
 
 app.UseHttpsRedirection();
